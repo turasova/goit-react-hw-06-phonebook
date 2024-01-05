@@ -16,17 +16,19 @@ const contactsSlice = createSlice({
     name: 'contacts',
     initialState: contactInitialState,
     reducers: {
- deleteContact: (state, action) => {
-  state.contacts = state.contacts.filter(el => el.id !== action.payload)
- },
- addContact: (state, action) => {
-  state.contacts = [...state.contacts, action.payload]
+        addContact(state, action) {
+         state.defoltContacts = [...state.defoltContacts, action.payload]
+        },
+ deleteContact(state, action){
+  state.defoltContacts = state.defoltContacts.filter(el => el.id !== action.payload)
  },
 },
 })
 
 export const getContactValue = state => state.contacts.defoltContacts;
-export const { deleteContact, addContact } = contactsSlice.actions;
+export const { addContact, deleteContact } = contactsSlice.actions;
+
+// export const contactsReduser = contactsSlice.reducer
 
 const persistConfig = {
     key: 'contacts',

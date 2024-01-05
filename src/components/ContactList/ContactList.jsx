@@ -1,8 +1,8 @@
-import { ContactItem } from 'components/ContactItem/ContactItem';
+//import { ContactItem } from 'components/ContactItem/ContactItem';
 import css from './ContactList.module.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { getContactValue } from 'redux/contactsSlice';
-import { getFilter } from 'redux/filterSlice';
+import { deleteContact, getContactValue } from 'store/contactsSlice';
+import { getFilter } from 'store/filterSlice';
 
 // export const ContactList = ({ contacts,deleteContact }) => {
 //     return (
@@ -30,18 +30,25 @@ export const ContactList = () => {
     name.toLowerCase().includes(lowerFilter)
   );
 
-  const deleteContact = contactId => {
+  const delContact = contactId => {
     dispatch(deleteContact(contactId));
   };
 
   return (
     <ul className={css.listContact}>
-      {visibleContacts.map(contact => (
-        <ContactItem
-          contacts={contact}
-          key={contact.id}
-          deleteContact={deleteContact}
-        />
+      {visibleContacts.map(({ name, number, id }) => (
+        <li className={css.contactItem} key={id}>
+          <p>
+            {name}: {number}
+          </p>
+          <button
+            type="button"
+            className={css.buttonDelete}
+            onClick={() => delContact(id)}
+          >
+            Delete
+          </button>
+        </li>
       ))}
     </ul>
   );

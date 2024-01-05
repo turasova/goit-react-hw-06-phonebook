@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import css from './Form.module.css';
 import { useState } from 'react';
-import { addContact, getContactValue } from 'redux/contactsSlice';
+import { addContact, getContactValue } from 'store/contactsSlice';
 import { nanoid } from 'nanoid';
 import Notiflix from 'notiflix';
 
@@ -27,22 +27,21 @@ export const Form = () => {
 
   const handleSubmit = e => {
     e.preventDefault();
-    const contact = { name, number };
+    const data = { name, number };
 
     const newContact = {
-      ...contact,
+      ...data,
       id: nanoid(),
     };
 
-    if (isDuplicated(contacts, newContact) === undefined) {
-      return [...contacts, newContact];
-    } else {
+    if (isDuplicated(contacts, newContact) !== undefined) {
       Notiflix.Notify.failure(`${newContact.name} is already in contacts`, {
         width: '400px',
         position: 'center-center',
         timeout: 3000,
         fontSize: '20px',
       });
+      return;
     }
 
     dispatch(addContact(newContact));
