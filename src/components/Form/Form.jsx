@@ -1,12 +1,18 @@
+import { useDispatch, useSelector } from 'react-redux';
 import css from './Form.module.css';
 import { useState } from 'react';
+import { addContact, getContactValue } from 'redux/contactsSlice';
+import { nanoid } from 'nanoid';
+import Notiflix from 'notiflix';
 
-export const Form = ({ onCreateContact }) => {
+export const Form = () => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
+  const dispatch = useDispatch();
+  const contacts = useSelector(getContactValue);
 
-  const handleChange = evt => {
-    const { name, value } = evt.currentTarget;
+  const handleChange = e => {
+    const { name, value } = e.currentTarget;
     switch (name) {
       case 'name':
         setName(value);
@@ -22,8 +28,32 @@ export const Form = ({ onCreateContact }) => {
   const handleSubmit = e => {
     e.preventDefault();
     const contact = { name, number };
-    onCreateContact(contact);
+
+    const newContact = {
+      ...contact,
+      id: nanoid(),
+    };
+
+    if (isDuplicated(contacts, newContact) === undefined) {
+      return [...contacts, newContact];
+    } else {
+      Notiflix.Notify.failure(`${newContact.name} is already in contacts`, {
+        width: '400px',
+        position: 'center-center',
+        timeout: 3000,
+        fontSize: '20px',
+      });
+    }
+
+    dispatch(addContact(newContact));
+
     reset();
+  };
+
+  const isDuplicated = (contacts, newContact) => {
+    return contacts.find(
+      ({ name }) => name.toLowerCase() === newContact.name.toLowerCase()
+    );
   };
 
   const reset = () => {
